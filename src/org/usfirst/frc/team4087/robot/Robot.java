@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 		wrist = new Wrist();
 		pidtuner = new PID_Tuner();
 	}
-	
+
 	@Override
 	public void robotPeriodic() {
 		SmartDashboard.putNumber("Oscr", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
@@ -71,9 +71,9 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 
-		//SmartDashboard.putNumber("Period", 4);
-		//SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
-		pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000);
+		// SmartDashboard.putNumber("Period", 4);
+		// SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
+		SmartDashboard.putNumber("OSCCCC", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
 
 	}
 

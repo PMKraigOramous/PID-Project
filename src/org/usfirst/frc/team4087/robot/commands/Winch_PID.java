@@ -5,6 +5,7 @@ import org.usfirst.frc.team4087.robot.subsystems.PID_Tuner;
 import org.usfirst.frc.team4087.robot.subsystems.Winch;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Winch_PID extends Command {
 
@@ -24,6 +25,9 @@ public class Winch_PID extends Command {
 	}
 
 	public double PID() {
+		
+		//SmartDashboard.putNumber("SP", setpoint);
+
 		error = setpoint - Robot.winch.getWinchPosition();
 		this.integral += (error * .02);
 

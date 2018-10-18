@@ -33,7 +33,7 @@ public class Drivebase extends Subsystem {
 
 	public void tankDrive(ControlMode percentoutput, double leftValue, double rightValue) {
 
-		LeftMotor.set(percentoutput, -leftValue + Robot.pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
+		LeftMotor.set(percentoutput, -leftValue);
 		RightMotor.set(percentoutput, rightValue);
 
 	}

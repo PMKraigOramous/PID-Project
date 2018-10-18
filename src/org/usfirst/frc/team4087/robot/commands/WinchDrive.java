@@ -38,7 +38,7 @@ public class WinchDrive extends Command {
 		}
 
 		// winch_pid.setSetpoint(-aim);
-		winch_pid.setSetpoint(16000);
+		winch_pid.setSetpoint(8000);
 		Robot.winch.winchControl(ControlMode.PercentOutput, winch_pid.PID());
 		//SmartDashboard.putNumber("",
 			//	winch_pid.pidtuner.ifOscillating(Robot.winch.getWinchPosition(), winch_pid.setpoint));

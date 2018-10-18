@@ -18,9 +18,8 @@ public class PID_Tuner extends Subsystem {
 	double PrevPositionCounter = 0;
 
 	double OscillationPeriodTimer = 0;
-
-	double CP;
-	double SP;
+	
+	double Period = 0;
 
 	long startTime = 0;
 	long endTime = 0;
@@ -47,9 +46,8 @@ public class PID_Tuner extends Subsystem {
 
 	public double ifOscillating(double CurrentPosition, double setpoint) {
 
-		SmartDashboard.putNumber("Period", endTime - startTime);
+		SmartDashboard.putNumber("Period", Period);
 		SmartDashboard.putNumber("Oscillation Counter", OscillationCounter);
-		SmartDashboard.putNumber("Previous Oscillation Counter", PrevOscillationCounter);
 		SmartDashboard.putNumber("Winch Position", Robot.winch.getWinchPosition());
 
 		if (CurrentPosition > setpoint) {
@@ -60,21 +58,28 @@ public class PID_Tuner extends Subsystem {
 
 			PrevPositionCounter = PositionCounter;
 
-			if (PrevOscillationCounter == OscillationCounter - 1) {
+			if (PrevOscillationCounter == OscillationCounter - 1 ) {
 
 				PrevOscillationCounter++;
 			}
 		}
-		if (OscillationCounter == 2) {
+		
+		if (PositionCounter > PrevPositionCounter && OscillationCounter == PrevOscillationCounter) {
+			OscillationCounter++;
+		}
+		
+		if (OscillationCounter == 3) {
 
 			startTime = System.currentTimeMillis();
 		}
 
-		if (OscillationCounter == 3) {
+		if (OscillationCounter == 4) {
 
 			endTime = System.currentTimeMillis();
 		}
-		return setpoint;
+		
+		Period = (endTime-startTime)/.02;
+		return Period;
 	}
 }
 
