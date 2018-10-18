@@ -9,6 +9,7 @@ package org.usfirst.frc.team4087.robot;
 
 import org.usfirst.frc.team4087.robot.commands.WinchDrive;
 import org.usfirst.frc.team4087.robot.subsystems.Drivebase;
+import org.usfirst.frc.team4087.robot.subsystems.PID_Tuner;
 import org.usfirst.frc.team4087.robot.subsystems.Winch;
 import org.usfirst.frc.team4087.robot.subsystems.Wrist;
 
@@ -19,12 +20,14 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
 	public static OI oi;
 	public static Drivebase drivebase;
 	public static Winch winch;
 	public static Wrist wrist;
+	public static PID_Tuner pidtuner;
 
 	@Override
 	public void robotInit() {
@@ -32,6 +35,12 @@ public class Robot extends TimedRobot {
 		drivebase = new Drivebase();
 		winch = new Winch();
 		wrist = new Wrist();
+		pidtuner = new PID_Tuner();
+	}
+	
+	@Override
+	public void robotPeriodic() {
+		SmartDashboard.putNumber("Oscr", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
 	}
 
 	@Override
@@ -56,13 +65,16 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		//System.out.println("Setpoint: ");
+
+		//SmartDashboard.putNumber("Period", 4);
+		//SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
+		pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000);
+
 	}
 
 	@Override
@@ -79,5 +91,5 @@ public class Robot extends TimedRobot {
 		motor.configNominalOutputReverse(0.0, 0);
 
 	}
-	
+
 }

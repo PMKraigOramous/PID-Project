@@ -30,12 +30,12 @@ public class Drivebase extends Subsystem {
 		RightMotorSlave.follow(RightMotor);
 
 	}
-	
+
 	public void tankDrive(ControlMode percentoutput, double leftValue, double rightValue) {
-		
-		LeftMotor.set(percentoutput, -leftValue);
+
+		LeftMotor.set(percentoutput, -leftValue + Robot.pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
 		RightMotor.set(percentoutput, rightValue);
-		
+
 	}
 
 	@Override
