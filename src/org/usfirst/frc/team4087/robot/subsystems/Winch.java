@@ -40,12 +40,17 @@ public class Winch extends Subsystem {
 		
 		W_Master.set(mode, target);
 
-		
-	}
+ 	}
 	
 	public double getWinchPosition() {
 		
 		return W_Master.getSelectedSensorPosition();
+		
+	}
+	
+	public double getWinchVelocity() {
+		
+		return W_Master.getSelectedSensorVelocity();
 		
 	}
 	

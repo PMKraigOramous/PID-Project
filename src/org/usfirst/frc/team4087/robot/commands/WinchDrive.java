@@ -6,6 +6,7 @@ import org.usfirst.frc.team4087.robot.subsystems.Winch;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class WinchDrive extends Command {
 
@@ -36,8 +37,11 @@ public class WinchDrive extends Command {
 			aim = W_UpperLimit;
 		}
 
-		winch_pid.setSetpoint(-aim);
-		Robot.winch.winchControl(ControlMode.PercentOutput, winch_pid.PID() / 35000);
+		// winch_pid.setSetpoint(-aim);
+		winch_pid.setSetpoint(16000);
+		Robot.winch.winchControl(ControlMode.PercentOutput, winch_pid.PID());
+		//SmartDashboard.putNumber("",
+			//	winch_pid.pidtuner.ifOscillating(Robot.winch.getWinchPosition(), winch_pid.setpoint));
 	}
 
 	@Override
