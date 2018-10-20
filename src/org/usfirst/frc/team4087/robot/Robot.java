@@ -40,7 +40,18 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic() {
-		SmartDashboard.putNumber("Oscr", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
+		SmartDashboard.putNumber("Period", pidtuner.Period);
+		SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
+		SmartDashboard.putNumber("Winch Position", Robot.winch.getWinchPosition());
+		SmartDashboard.putNumber("Winch Velocity", Robot.winch.getWinchVelocity());
+		SmartDashboard.putNumber("P", pidtuner.P);
+		SmartDashboard.putNumber("Timer", pidtuner.startOscillationTime);
+		SmartDashboard.putNumber("Timer Switch", pidtuner.TimerSwitch);
+		SmartDashboard.putBoolean("Oscillating?", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
+		SmartDashboard.putNumber("System Time", System.currentTimeMillis());
+		SmartDashboard.putNumber("Oscillation Time", System.currentTimeMillis() - pidtuner.startOscillationTime);
+		SmartDashboard.putNumber("Iterations", pidtuner.iterationCounter);
+
 	}
 
 	@Override
@@ -73,7 +84,6 @@ public class Robot extends TimedRobot {
 
 		// SmartDashboard.putNumber("Period", 4);
 		// SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
-		SmartDashboard.putNumber("OSCCCC", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
 
 	}
 

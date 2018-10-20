@@ -8,14 +8,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Winch_PID extends Command {
-
-	PID_Tuner pidtuner = new PID_Tuner();
-	private double kP = pidtuner.P_Tuner();
-	private double kI = pidtuner.I_Tuner();
-	private double kD = pidtuner.D_Tuner();
-
+	/*
+	 * private double kP = Robot.pidtuner.P_Tuner(); private double kI =
+	 * Robot.pidtuner.I_Tuner(); private double kD = Robot.pidtuner.D_Tuner();
+	 */
 	private double derivative;
-	private double WinchMotorPower;
 
 	public double error;
 	double integral, previous_error, setpoint = 0;
@@ -25,14 +22,18 @@ public class Winch_PID extends Command {
 	}
 
 	public double PID() {
-		
-		//SmartDashboard.putNumber("SP", setpoint);
+
+		double kP = Robot.pidtuner.P_Tuner();
+		double kI = Robot.pidtuner.I_Tuner();
+		double kD = Robot.pidtuner.D_Tuner();
+
+		// SmartDashboard.putNumber("SP", setpoint);
 
 		error = setpoint - Robot.winch.getWinchPosition();
 		this.integral += (error * .02);
 
 		derivative = (error - this.previous_error) / .02;
-		return WinchMotorPower = -(kP * error + kI * this.integral + kD * derivative);
+		return -(kP * error + kI * this.integral + kD * derivative);
 	}
 
 	public void execute() {

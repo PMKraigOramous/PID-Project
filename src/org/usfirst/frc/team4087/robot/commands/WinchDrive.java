@@ -18,6 +18,7 @@ public class WinchDrive extends Command {
 	public double finalDirection;
 	public double finalVelocity;
 	public double aim, aim_previous = 0;
+	public double vel, vel_previous = 0;
 
 	public WinchDrive() {
 		requires(Robot.winch);
@@ -29,19 +30,31 @@ public class WinchDrive extends Command {
 
 	protected void execute() {
 
-		if (Robot.winch.getWinchPosition() >= W_UpperLimit) {
+
+		//vel = 0; // vel_previous = 0;
+
+	/*	if (Robot.winch.getWinchPosition() >= W_UpperLimit) {
 
 			aim += this.aim_previous + Robot.oi.getControlJoyYL() * 400;
 
 		} else {
 			aim = W_UpperLimit;
 		}
+		*/
 
 		// winch_pid.setSetpoint(-aim);
-		winch_pid.setSetpoint(8000);
+		// Robot.winch.winchControl(ControlMode.PercentOutput, winch_pid.PID());
+
+		// vel += this.vel_previous + Robot.oi.getControlJoyYL() * .2;
+
+		// Robot.winch.winchControl(ControlMode.PercentOutput, -vel);
+
+		winch_pid.setSetpoint(Robot.pidtuner.PID_Testing_Setpoint);
+		
 		Robot.winch.winchControl(ControlMode.PercentOutput, winch_pid.PID());
-		//SmartDashboard.putNumber("",
-			//	winch_pid.pidtuner.ifOscillating(Robot.winch.getWinchPosition(), winch_pid.setpoint));
+		// SmartDashboard.putNumber("",
+		// winch_pid.pidtuner.ifOscillating(Robot.winch.getWinchPosition(),
+		// winch_pid.setpoint));
 	}
 
 	@Override

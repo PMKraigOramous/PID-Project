@@ -11,7 +11,7 @@ public class PID_Tuner extends Subsystem {
 
 	double MaxError = 0;
 
-	double OscillationCounter = 0;
+	public double OscillationCounter = 0;
 	double PrevOscillationCounter = 0;
 
 	double PositionCounter = 0;
@@ -19,27 +19,67 @@ public class PID_Tuner extends Subsystem {
 
 	double OscillationPeriodTimer = 0;
 
-	double Period = 0;
+	public double Period = 0;
 
-	double P = 0.0000001;
+	public double PID_Testing_Setpoint = 8000;
+	public double TimerSwitch;
 
-	long startTime = 0;
-	long endTime = 0;
+	public double P = 0.0000001;
+	public long startOscillationTime = System.currentTimeMillis();
+	double endOscillationTime = 0;
+	double startPeriodTime = 0;
+	double endPeriodTime = 0;
+
+	public int iterationCounter = 0;
 
 	// added all this crap with P
+	public void setTimer0() {
+		startOscillationTime = System.currentTimeMillis();
+
+	}
 
 	public double P_Tuner() {
+		if (TimerSwitch == 0) {
+			setTimer0();
+			TimerSwitch++;
+		}
+		if (System.currentTimeMillis() - startOscillationTime > 5000) {
 
-		if (ifOscillating(Robot.winch.getWinchPosition(), 8000) == false && OscillationCounter <= 0) {
+			if (ifOscillating(Robot.winch.getWinchPosition(), PID_Testing_Setpoint) == false) {
+				PID_Testing_Setpoint = 0;
 
-			return P *= 10;
-
-		} else {
+				TimerSwitch = 0;
+				PID_Testing_Setpoint = 8000;
+			}
+			P *= 10;
+			SmartDashboard.putString("Heyo?", "Over 5 seconds but no oscillation");
 
 			return P;
-
 		}
 
+		if (ifOscillating(Robot.winch.getWinchPosition(), PID_Testing_Setpoint) == true) {
+			PID_Testing_Setpoint = 0;
+
+			if (System.currentTimeMillis() - startOscillationTime > 10000) {
+				TimerSwitch = 0;
+				PID_Testing_Setpoint = 8000;
+			}
+			SmartDashboard.putString("Done?", "All done!");
+			return P;
+		} else {
+
+			if (ifOscillating(Robot.winch.getWinchPosition(), PID_Testing_Setpoint) == false) {
+				SmartDashboard.putString("Heyo?", "Under 5 seconds but no oscillation");
+
+				return P;
+			} else {
+				// TimerSwitch = 0;
+				SmartDashboard.putString("Heyo?", "Under 5 seconds but oscillation");
+
+				return P;
+			}
+
+		}
 	}
 
 	public double I_Tuner() {
@@ -56,10 +96,6 @@ public class PID_Tuner extends Subsystem {
 	}
 
 	public boolean ifOscillating(double CurrentPosition, double setpoint) {
-
-		SmartDashboard.putNumber("Period", Period);
-		SmartDashboard.putNumber("Oscillation Counter", OscillationCounter);
-		SmartDashboard.putNumber("Winch Position", Robot.winch.getWinchPosition());
 
 		if (CurrentPosition > setpoint) {
 
@@ -81,19 +117,18 @@ public class PID_Tuner extends Subsystem {
 
 		if (OscillationCounter == 3) {
 
-			startTime = System.currentTimeMillis();
+			startPeriodTime = System.currentTimeMillis();
 		}
 
 		if (OscillationCounter == 4) {
 
-			endTime = System.currentTimeMillis();
+			endPeriodTime = System.currentTimeMillis();
 		}
 		// added thing here to reset the thing
-		if (ifOscillating(CurrentPosition, setpoint) == false) {
-			OscillationCounter = 0;
-		}
 
-		if (OscillationCounter > 2) {
+		Period = (endPeriodTime - startPeriodTime) / .02;
+
+		if (Period < 1 && Period != 0) {
 			return true;
 		} else {
 			return false;
@@ -103,7 +138,7 @@ public class PID_Tuner extends Subsystem {
 
 	public double returnPeriod(boolean ifOscillating) {
 
-		Period = (endTime - startTime) / .02;
+		Period = (endPeriodTime - startPeriodTime) / .02;
 		return Period;
 
 	}
