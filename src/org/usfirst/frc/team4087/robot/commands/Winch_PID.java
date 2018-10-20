@@ -23,9 +23,11 @@ public class Winch_PID extends Command {
 
 	public double PID() {
 
-		double kP = Robot.pidtuner.P_Tuner();
-		double kI = Robot.pidtuner.I_Tuner();
-		double kD = Robot.pidtuner.D_Tuner();
+		//double kP = Robot.pidtuner.P_Tuner();double kI = Robot.pidtuner.I_Tuner();double kD = Robot.pidtuner.D_Tuner();
+
+		
+	 double kP = 0.006; double kI = 8.0E-7; double kD = 11.25;
+		
 
 		// SmartDashboard.putNumber("SP", setpoint);
 

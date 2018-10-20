@@ -41,16 +41,21 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic() {
 		SmartDashboard.putNumber("Period", pidtuner.Period);
-		SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
 		SmartDashboard.putNumber("Winch Position", Robot.winch.getWinchPosition());
 		SmartDashboard.putNumber("Winch Velocity", Robot.winch.getWinchVelocity());
 		SmartDashboard.putNumber("P", pidtuner.P);
-		SmartDashboard.putNumber("Timer", pidtuner.startOscillationTime);
-		SmartDashboard.putNumber("Timer Switch", pidtuner.TimerSwitch);
-		SmartDashboard.putBoolean("Oscillating?", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), 8000));
-		SmartDashboard.putNumber("System Time", System.currentTimeMillis());
+		SmartDashboard.putNumber("Winch Setpoint", pidtuner.PID_Testing_Setpoint);
+		SmartDashboard.putBoolean("Oscillating?", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), pidtuner.PID_Testing_Setpoint));
 		SmartDashboard.putNumber("Oscillation Time", System.currentTimeMillis() - pidtuner.startOscillationTime);
-		SmartDashboard.putNumber("Iterations", pidtuner.iterationCounter);
+
+		SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
+		SmartDashboard.putNumber("Previous Oscillation Counter", pidtuner.PrevOscillationCounter);
+		SmartDashboard.putNumber("Position Counter", pidtuner.PositionCounter);
+		SmartDashboard.putNumber("Previous Position Counter", pidtuner.PrevPositionCounter);
+		
+		SmartDashboard.putNumber("Final P", pidtuner.ResultantP);
+		SmartDashboard.putNumber("Final I", pidtuner.I);
+		SmartDashboard.putNumber("Final D", pidtuner.D);
 
 	}
 
