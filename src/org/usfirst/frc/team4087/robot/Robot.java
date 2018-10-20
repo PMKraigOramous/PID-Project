@@ -44,6 +44,8 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Winch Position", Robot.winch.getWinchPosition());
 		SmartDashboard.putNumber("Winch Velocity", Robot.winch.getWinchVelocity());
 		SmartDashboard.putNumber("P", pidtuner.P);
+		SmartDashboard.putNumber("D", pidtuner.D);
+
 		SmartDashboard.putNumber("Winch Setpoint", pidtuner.PID_Testing_Setpoint);
 		SmartDashboard.putBoolean("Oscillating?", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), pidtuner.PID_Testing_Setpoint));
 		SmartDashboard.putNumber("Oscillation Time", System.currentTimeMillis() - pidtuner.startOscillationTime);

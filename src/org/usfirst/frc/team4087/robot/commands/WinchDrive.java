@@ -32,7 +32,7 @@ public class WinchDrive extends Command {
 
 
 		//vel = 0; // vel_previous = 0;
-
+/*
 		if (Robot.winch.getWinchPosition() >= W_UpperLimit) {
 
 			aim += this.aim_previous + Robot.oi.getControlJoyYL() * 400;
@@ -42,7 +42,7 @@ public class WinchDrive extends Command {
 		}
 		
 
-		 winch_pid.setSetpoint(-aim);
+		 winch_pid.setSetpoint(-aim);*/
 		// Robot.winch.winchControl(ControlMode.PercentOutput, winch_pid.PID());
 
 		// vel += this.vel_previous + Robot.oi.getControlJoyYL() * .2;
