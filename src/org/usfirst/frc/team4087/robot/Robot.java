@@ -40,22 +40,28 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic() {
-		SmartDashboard.putNumber("Period", pidtuner.Period);
-		SmartDashboard.putNumber("Winch Position", Robot.winch.getWinchPosition());
-		SmartDashboard.putNumber("Winch Velocity", Robot.winch.getWinchVelocity());
-		SmartDashboard.putNumber("P", pidtuner.P);
-		SmartDashboard.putNumber("Winch Setpoint", pidtuner.PID_Testing_Setpoint);
-		SmartDashboard.putBoolean("Oscillating?", pidtuner.ifOscillating(Robot.winch.getWinchPosition(), pidtuner.PID_Testing_Setpoint));
-		SmartDashboard.putNumber("Oscillation Time", System.currentTimeMillis() - pidtuner.startOscillationTime);
 
-		SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
-		SmartDashboard.putNumber("Previous Oscillation Counter", pidtuner.PrevOscillationCounter);
+		// Oscillation Measurements
 		SmartDashboard.putNumber("Position Counter", pidtuner.PositionCounter);
 		SmartDashboard.putNumber("Previous Position Counter", pidtuner.PrevPositionCounter);
-		
-		SmartDashboard.putNumber("Final P", pidtuner.ResultantP);
-		SmartDashboard.putNumber("Final I", pidtuner.I);
-		SmartDashboard.putNumber("Final D", pidtuner.D);
+		SmartDashboard.putNumber("Cycle Time", pidtuner.SystemTime);
+
+		// Final PID Values
+		SmartDashboard.putNumber("Final P", pidtuner.finalP);
+
+		// Current PID Values
+		SmartDashboard.putNumber("Current P", pidtuner.P);
+
+		// Winch Measurements
+		SmartDashboard.putNumber("Winch Position (Graph)", Robot.winch.getWinchPosition());
+		SmartDashboard.putNumber("Winch Position (Label)", Robot.winch.getWinchPosition());
+		SmartDashboard.putNumber("Winch Velocity", Robot.winch.getWinchVelocity());
+		SmartDashboard.putNumber("Winch Setpoint", pidtuner.PID_Testing_Setpoint);
+		SmartDashboard.putNumber("Cycle Max Position", pidtuner.CurrentMaxPosition);
+
+		// PID Completion Status
+		SmartDashboard.putBoolean("P Complete?", pidtuner.PComplete);
+		SmartDashboard.putBoolean("P 2 Complete?", pidtuner.PTunerComplete2);
 
 	}
 

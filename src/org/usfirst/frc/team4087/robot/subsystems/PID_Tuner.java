@@ -9,107 +9,128 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PID_Tuner extends Subsystem {
 
-	double MaxError = 0;
-	public boolean STAHP = false;
+	public boolean PComplete = false;
+	public boolean PTunerComplete2 = false;
+	public boolean DComplete = false;
+
+	public double defaultPosition = 0;
+	public double testPosition = 16000;
+	public double currentPosition = 0;
+	public double CurrentMaxPosition = 0;
+
 	public double OscillationCounter = 0;
 	public double PrevOscillationCounter = 0;
 
 	public double PositionCounter = 0;
 	public double PrevPositionCounter = 0;
 
-	double OscillationPeriodTimer = 0;
+	public boolean PreviousOscillating = true;
+	public boolean CurrentOscillating = false;
 
 	public double Period = 1;
+	public double CurrentAvgSpeed = 0;
+	public double PreviousAvgSpeed = 0;
 
 	public double PID_Testing_Setpoint = 16000;
-	public double TimerSwitch;
 	public double finalP = 0;
+	public double finalI = 0;
+	public double finalD = 0;
 
-	public double P = 0.0000001;
+	public double P = 0.0001;
 	public double I = 0;
 	public double D = 0;
-	
-	public double ResultantP = 0;
-	
+
+	public double previousOscillationCounter = 0;
+
+	public boolean FirstTime = true;
+
 	public long startOscillationTime = System.currentTimeMillis();
-	double endOscillationTime = 0;
 	double startPeriodTime = 0;
 	double endPeriodTime = 0;
 
 	public int iterationCounter = 0;
+	public double SystemTime = System.currentTimeMillis() - startOscillationTime;
 
 	// added all this crap with P
 	public void setTimer0() {
 		startOscillationTime = System.currentTimeMillis();
-
 	}
 
-	public double P_Tuner() {
-		if (!STAHP) {
-			if (System.currentTimeMillis() - startOscillationTime > 5000) {
+	public void PD_Tuner() {
+		currentPosition = Robot.winch.getWinchPosition();
+		SystemTime = System.currentTimeMillis() - startOscillationTime;
+		
+		if (!PComplete) {
+			if (CurrentMaxPosition < testPosition) {
 
-				if (ifOscillating(Robot.winch.getWinchPosition(), PID_Testing_Setpoint) == false) {
-					if (System.currentTimeMillis() - startOscillationTime < 10000) {
+				if (SystemTime > 5000) {
+					if (SystemTime < 10000) {
 						PID_Testing_Setpoint = 0;
 					} else {
 						PID_Testing_Setpoint = 16000;
-						setTimer0();
 						P *= 10;
-						OscillationCounter = 0;
+						PositionCounter = 0;
+						PrevPositionCounter = 0;
+						setTimer0();
 					}
-					SmartDashboard.putString("Heyo?", "Over 5 seconds but no oscillation");
-				}
-
-				if (ifOscillating(Robot.winch.getWinchPosition(), PID_Testing_Setpoint) == true) {
-					PID_Testing_Setpoint = 0;
-					OscillationCounter = 0;
-					STAHP = true;
-					finalP = P;
-					P = 0;
-					SmartDashboard.putString("Heyo?", "Done");
+				} else {
+					if (currentPosition > CurrentMaxPosition) {
+						CurrentMaxPosition = currentPosition;
+					}
+					if (currentPosition > testPosition) {
+						PositionCounter++;
+					}
 				}
 			} else {
 
-				if (ifOscillating(Robot.winch.getWinchPosition(), PID_Testing_Setpoint) == false) {
-					SmartDashboard.putString("Heyo?", "Under 5 seconds but no oscillation");
+				finalP = P;
+				previousOscillationCounter = OscillationCounter;
+				PComplete = true;
+				CurrentOscillating = true;
+			}
 
+		} else {
+			if (!PTunerComplete2) {
+				if (SystemTime > 5) {
+					if (PositionCounter - PrevPositionCounter == 0) {
+						PTunerComplete2 = true;
+					} else {
+						if (SystemTime > 10) {
+							P -= P * (CurrentMaxPosition) / (testPosition - defaultPosition);
+							CurrentMaxPosition = 0;
+							PrevPositionCounter = PositionCounter;
+							PID_Testing_Setpoint = defaultPosition;
+						} else {
+							PID_Testing_Setpoint = defaultPosition;
+							setTimer0();
+						}
+					}
 				} else {
-					// TimerSwitch = 0;
-					PID_Testing_Setpoint = 0;
-					OscillationCounter = 0;
-					finalP = P;
-					P = 0;
-					SmartDashboard.putString("Heyo?", "Done");
-					STAHP = true;
+					if (currentPosition > CurrentMaxPosition) {
+						CurrentMaxPosition = currentPosition;
+					}
+					if (currentPosition > testPosition) {
+						PositionCounter++;
+					}
 
 				}
-
 			}
-		} else {
-			ResultantP = .6*finalP;
 		}
+	}
+
+	public double P_Tuner() {
+
 		return P;
+
 	}
 
 	public double I_Tuner() {
-		
-		if (STAHP) {
-			
-			I = 1.2*finalP/Period;
-			
-		}
-		
+
 		return I;
 	}
 
 	public double D_Tuner() {
-		
-	if (STAHP) {
-			
-			D = 3*finalP*Period/40;
-			
-		}
-		
+
 		return D;
 	}
 
@@ -118,7 +139,10 @@ public class PID_Tuner extends Subsystem {
 
 	}
 
-	public boolean ifOscillating(double CurrentPosition, double setpoint) {
+	public boolean ifOscillatingD(double CurrentPosition, double setpoint, double AvgSpeed) {
+
+		boolean ifOscillatingBoolean = true;
+
 		if (PID_Testing_Setpoint != 0) {
 			if (CurrentPosition > PID_Testing_Setpoint) {
 
@@ -138,34 +162,61 @@ public class PID_Tuner extends Subsystem {
 				OscillationCounter++;
 			}
 
-			if (OscillationCounter == 6) {
+			if (AvgSpeed > 10) {
 
-				startPeriodTime = System.currentTimeMillis();
-			}
-
-			if (OscillationCounter == 7) {
-
-				endPeriodTime = System.currentTimeMillis();
-			}
-			// added thing here to reset the thing
-
-			Period = (endPeriodTime - startPeriodTime) / .02;
-
-			if (Period < 100000 && Period > .01 && OscillationCounter >= 6) {
-				return true;
+				if (OscillationCounter - previousOscillationCounter >= 6) {
+					ifOscillatingBoolean = true;
+				} else {
+					ifOscillatingBoolean = false;
+				}
 			} else {
-				return false;
+				ifOscillatingBoolean = false;
 			}
+
 		} else {
-			OscillationCounter = 0;
-			PrevOscillationCounter = 0;
-			return false;
 
+			ifOscillatingBoolean = false;
 		}
-
+		return ifOscillatingBoolean;
 	}
 
-	public double returnPeriod(boolean ifOscillating) {
+	public boolean ifOscillatingP(double CurrentPosition, double setpoint) {
+
+		boolean ifOscillatingBoolean = true;
+
+		if (PID_Testing_Setpoint != 0) {
+			if (CurrentPosition > PID_Testing_Setpoint) {
+
+				PositionCounter++;
+
+			} else {
+
+				PrevPositionCounter = PositionCounter;
+
+				if (PrevOscillationCounter == OscillationCounter - 1) {
+
+					PrevOscillationCounter++;
+				}
+			}
+
+			if (PositionCounter > PrevPositionCounter && OscillationCounter == PrevOscillationCounter) {
+				OscillationCounter++;
+			}
+
+			if (OscillationCounter - previousOscillationCounter >= 6) {
+				ifOscillatingBoolean = true;
+			} else {
+				ifOscillatingBoolean = false;
+			}
+
+		} else {
+
+			ifOscillatingBoolean = false;
+		}
+		return ifOscillatingBoolean;
+	}
+
+	public double returnPeriod() {
 
 		Period = (endPeriodTime - startPeriodTime) / .02;
 		return Period;
