@@ -1,6 +1,5 @@
 package org.usfirst.frc.team4087.robot.commands;
 
-
 import org.usfirst.frc.team4087.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -24,34 +23,30 @@ public class WristDrive extends Command {
 	}
 
 	protected void execute() {
-		
 
-		//if (Math.abs(Robot.oi.getControlJoyYL()) > 0 && Robot.winch.getWinchPosition() >= W_UpperLimit &&  Robot.winch.getWinchPosition() <= W_LowerLimit) {
+		// if (Math.abs(Robot.oi.getControlJoyYL()) > 0 &&
+		// Robot.winch.getWinchPosition() >= W_UpperLimit &&
+		// Robot.winch.getWinchPosition() <= W_LowerLimit) {
 		if (Math.abs(Robot.oi.getControlJoyYR()) > 0 && Robot.wrist.getWristPosition() >= W_UpperLimit) {
 
-			Robot.wrist.wristControl(ControlMode.PercentOutput, Robot.oi.getControlJoyYR()/2);
+			Robot.wrist.wristControl(ControlMode.PercentOutput, Robot.oi.getControlJoyYR() / 2);
 			finalPosition = Robot.wrist.getWristPosition();
 			finalDirection = Math.signum(Robot.oi.getControlJoyYR());
 			finalVelocity = Robot.oi.getControlJoyYR();
-			
 
 		} else {
 
-			Robot.wrist.wristControl(ControlMode.Position, finalPosition+1200*(finalVelocity));
+			Robot.wrist.wristControl(ControlMode.Position, finalPosition + 1200 * (finalVelocity));
 
 		}
-	
 
 		if (finalPosition < W_UpperLimit) {
 			finalPosition = W_UpperLimit;
 		}
-		
+
 		/*
-		if (finalPosition > W_LowerLimit) {
-			finalPosition = W_LowerLimit;
-		}
-		*/
-		
+		 * if (finalPosition > W_LowerLimit) { finalPosition = W_LowerLimit; }
+		 */
 
 	}
 

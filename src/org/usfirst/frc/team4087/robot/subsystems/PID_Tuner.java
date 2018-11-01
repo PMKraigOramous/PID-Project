@@ -36,7 +36,7 @@ public class PID_Tuner extends Subsystem {
 	public double finalI = 0;
 	public double finalD = 0;
 
-	public double P = 0.0001;
+	public double P = 0.0000001;
 	public double I = 0;
 	public double D = 0;
 
@@ -49,7 +49,7 @@ public class PID_Tuner extends Subsystem {
 	double endPeriodTime = 0;
 
 	public int iterationCounter = 0;
-	public double SystemTime = System.currentTimeMillis() - startOscillationTime;
+	public long SystemTime = System.currentTimeMillis() - startOscillationTime;
 
 	// added all this crap with P
 	public void setTimer0() {
@@ -58,61 +58,58 @@ public class PID_Tuner extends Subsystem {
 
 	public void PD_Tuner() {
 		currentPosition = Robot.winch.getWinchPosition();
-		SystemTime = System.currentTimeMillis() - startOscillationTime;
-		
+		SystemTime = (System.currentTimeMillis() - startOscillationTime) / 1000;
+
 		if (!PComplete) {
 			if (CurrentMaxPosition < testPosition) {
-
-				if (SystemTime > 5000) {
-					if (SystemTime < 10000) {
-						PID_Testing_Setpoint = 0;
+				if (SystemTime > 5) {
+					if (SystemTime < 10) {
+						PID_Testing_Setpoint = defaultPosition;
 					} else {
-						PID_Testing_Setpoint = 16000;
+
 						P *= 10;
-						PositionCounter = 0;
-						PrevPositionCounter = 0;
+						PID_Testing_Setpoint = testPosition;
+
+						CurrentMaxPosition = 0;
 						setTimer0();
 					}
 				} else {
 					if (currentPosition > CurrentMaxPosition) {
 						CurrentMaxPosition = currentPosition;
 					}
-					if (currentPosition > testPosition) {
-						PositionCounter++;
-					}
 				}
 			} else {
 
 				finalP = P;
+				setTimer0();
 				previousOscillationCounter = OscillationCounter;
+				CurrentMaxPosition = 0;
+
 				PComplete = true;
-				CurrentOscillating = true;
 			}
 
 		} else {
 			if (!PTunerComplete2) {
 				if (SystemTime > 5) {
-					if (PositionCounter - PrevPositionCounter == 0) {
+					if (CurrentMaxPosition < testPosition) {
 						PTunerComplete2 = true;
 					} else {
-						if (SystemTime > 10) {
-							P -= P * (CurrentMaxPosition) / (testPosition - defaultPosition);
-							CurrentMaxPosition = 0;
-							PrevPositionCounter = PositionCounter;
+						if (SystemTime < 10) {
 							PID_Testing_Setpoint = defaultPosition;
 						} else {
-							PID_Testing_Setpoint = defaultPosition;
+
+							P -= P * (CurrentMaxPosition - testPosition) / (testPosition - defaultPosition);
+							PID_Testing_Setpoint = testPosition;
+
+							CurrentMaxPosition = 0;
 							setTimer0();
 						}
 					}
+
 				} else {
 					if (currentPosition > CurrentMaxPosition) {
 						CurrentMaxPosition = currentPosition;
 					}
-					if (currentPosition > testPosition) {
-						PositionCounter++;
-					}
-
 				}
 			}
 		}
