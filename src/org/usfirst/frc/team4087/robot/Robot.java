@@ -7,7 +7,6 @@
 
 package org.usfirst.frc.team4087.robot;
 
-import org.usfirst.frc.team4087.robot.commands.WinchDrive;
 import org.usfirst.frc.team4087.robot.subsystems.Drivebase;
 import org.usfirst.frc.team4087.robot.subsystems.PID_Tuner;
 import org.usfirst.frc.team4087.robot.subsystems.Winch;
@@ -42,9 +41,7 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic() {
 
 		// Oscillation Measurements
-		SmartDashboard.putNumber("Position Counter", pidtuner.PositionCounter);
-		SmartDashboard.putNumber("Previous Position Counter", pidtuner.PrevPositionCounter);
-		SmartDashboard.putNumber("Cycle Time", pidtuner.SystemTime);
+		SmartDashboard.putNumber("Cycle Time", pidtuner.SystemTime*10);
 
 		// Final PID Values
 		SmartDashboard.putNumber("Final P", pidtuner.finalP);
@@ -57,7 +54,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Winch Position (Label)", Robot.winch.getWinchPosition());
 		SmartDashboard.putNumber("Winch Velocity", Robot.winch.getWinchVelocity());
 		SmartDashboard.putNumber("Winch Setpoint", pidtuner.PID_Testing_Setpoint);
-		SmartDashboard.putNumber("Cycle Max Position", pidtuner.CurrentMaxPosition);
+		SmartDashboard.putNumber("Cycle Max Position", pidtuner.currentMaxPosition);
 
 		// PID Completion Status
 		SmartDashboard.putBoolean("P Complete?", pidtuner.PComplete);
@@ -92,10 +89,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-
-		// SmartDashboard.putNumber("Period", 4);
-		// SmartDashboard.putNumber("Oscillation Counter", pidtuner.OscillationCounter);
-
 	}
 
 	@Override
