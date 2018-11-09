@@ -10,7 +10,7 @@ public class Winch_PID extends Command {
 	public double error;
 	double integral, previous_error, setpoint = 0;
 	
-	public double IterationTime = .02;
+	public double iterationTime = .02;
 
 	public void setSetpoint(double setpoint) {
 		this.setpoint = setpoint;
@@ -24,9 +24,9 @@ public class Winch_PID extends Command {
 		double kD = Robot.pidtuner.D_Tuner();
 
 		error = setpoint - Robot.winch.getWinchPosition();
-		this.integral += (error * IterationTime);
+		this.integral += (error * iterationTime);
 
-		derivative = (error - this.previous_error) / IterationTime;
+		derivative = (error - this.previous_error) / iterationTime;
 
 		return -(kP * error + kI * this.integral + kD * derivative);
 	}

@@ -47,7 +47,9 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Final P", pidtuner.finalP);
 
 		// Current PID Values
-		SmartDashboard.putNumber("Current P", pidtuner.P);
+		SmartDashboard.putNumber("Current P (label)", pidtuner.P);
+		SmartDashboard.putNumber("Current P (graph)", pidtuner.P);
+		SmartDashboard.putNumber("Current I", pidtuner.I);
 
 		// Winch Measurements
 		SmartDashboard.putNumber("Winch Position (Graph)", Robot.winch.getWinchPosition());
@@ -55,10 +57,16 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Winch Velocity", Robot.winch.getWinchVelocity());
 		SmartDashboard.putNumber("Winch Setpoint", pidtuner.PID_Testing_Setpoint);
 		SmartDashboard.putNumber("Cycle Max Position", pidtuner.currentMaxPosition);
+		SmartDashboard.putNumber("Cycle Max Overshoot", pidtuner.currentMaxOvershoot);
+		SmartDashboard.putNumber("Cycle Final Position", pidtuner.currentFinalPosition);
+		SmartDashboard.putNumber("Cycle Final Overshoot", pidtuner.currentFinalOvershoot);
+		//SmartDashboard.putNumber("PPrime", pidtuner.PPrime);
 
 		// PID Completion Status
 		SmartDashboard.putBoolean("P Complete?", pidtuner.PComplete);
-		SmartDashboard.putBoolean("P 2 Complete?", pidtuner.PTunerComplete2);
+		SmartDashboard.putBoolean("P 2 Complete?", pidtuner.PComplete2);
+		SmartDashboard.putBoolean("I Complete?", pidtuner.IComplete);
+		SmartDashboard.putBoolean("I 2 Complete?", pidtuner.IComplete2);
 
 	}
 
